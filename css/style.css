@@ -1,0 +1,1098 @@
+/* ===================================
+   1. RESET & ROOT
+=================================== */
+
+:root {
+  --primary: #168a4b;
+  --primary-dark: #0d6b39;
+  --primary-light: #e9f7ef;
+
+  --bg: #f4f7f6;
+  --card: #ffffff;
+  --text: #17231d;
+  --muted: #68736d;
+  --border: #dce5df;
+
+  --shadow: 0 10px 30px rgba(20, 50, 35, 0.10);
+  --radius: 20px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  font-family: Arial, "Noto Sans Bengali", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+
+/* ===================================
+   2. HEADER
+=================================== */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-content {
+  position: relative;
+  min-height: 92px;
+  max-width: 900px;
+  margin: auto;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+}
+
+.logo-placeholder {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 27px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  box-shadow: 0 8px 20px rgba(22, 138, 75, 0.25);
+}
+
+.brand-text h1 {
+  font-size: 20px;
+  line-height: 1.25;
+}
+
+.brand-text p {
+  margin-top: 3px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.menu-btn {
+  position: absolute;
+  right: 18px;
+  width: 46px;
+  height: 46px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--primary-light);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+
+.menu-btn span {
+  width: 21px;
+  height: 2px;
+  border-radius: 10px;
+  background: var(--primary-dark);
+}
+
+
+/* ===================================
+   3. SIDE MENU
+=================================== */
+
+.menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  background: rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.3s;
+}
+
+.side-menu {
+  position: fixed;
+  top: 0;
+  right: -320px;
+  z-index: 200;
+  width: min(86vw, 320px);
+  height: 100vh;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  background: var(--card);
+  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.12);
+  transition: right 0.3s ease;
+}
+
+.side-menu.open {
+  right: 0;
+}
+
+.menu-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.close-menu {
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.menu-links {
+  display: grid;
+  gap: 10px;
+  padding: 24px 0;
+}
+
+.menu-links a {
+  padding: 15px;
+  border-radius: 14px;
+  text-decoration: none;
+  color: var(--text);
+  background: #f8faf9;
+  transition: 0.2s;
+}
+
+.menu-links a:active {
+  transform: scale(0.98);
+  background: var(--primary-light);
+}
+
+.menu-footer {
+  margin-top: auto;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+}
+
+
+/* ===================================
+   4. MAIN CONTENT
+=================================== */
+
+.main-content {
+  width: min(100%, 900px);
+  margin: auto;
+  padding: 24px 16px 40px;
+}
+
+.hero {
+  padding: 24px 8px 28px;
+  text-align: center;
+}
+
+.welcome-text {
+  font-size: 13px;
+  color: var(--primary);
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.hero h2 {
+  margin: 8px 0 10px;
+  font-size: clamp(28px, 7vw, 40px);
+  line-height: 1.1;
+}
+
+.hero-description {
+  max-width: 580px;
+  margin: auto;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+
+/* ===================================
+   5. SEARCH CARD
+=================================== */
+
+.search-card {
+  position: relative;
+  padding: 20px;
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(220, 229, 223, 0.8);
+}
+
+.search-input-box {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px;
+  margin-bottom: 18px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: #fbfdfc;
+}
+
+.search-icon {
+  font-size: 24px;
+  color: var(--primary);
+}
+
+.search-input-box input {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-size: 16px;
+  color: var(--text);
+}
+
+.form-group {
+  margin-top: 14px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.form-group select {
+  width: 100%;
+  height: 55px;
+  padding: 0 16px;
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  outline: none;
+  background: white;
+  color: var(--text);
+  font-size: 16px;
+}
+
+.form-group select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(22, 138, 75, 0.10);
+}
+
+.search-btn {
+  width: 100%;
+  min-height: 58px;
+  margin-top: 22px;
+  border: 0;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  font-size: 17px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 10px 22px rgba(22, 138, 75, 0.24);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.search-btn:active {
+  transform: scale(0.98);
+  box-shadow: 0 5px 12px rgba(22, 138, 75, 0.18);
+}
+
+.message {
+  min-height: 22px;
+  padding-top: 10px;
+  text-align: center;
+  color: #b42318;
+  font-size: 14px;
+}
+
+
+/* ===================================
+   6. RESULT CARD
+=================================== */
+
+.result-card {
+  display: none;
+  margin-top: 22px;
+  padding: 18px;
+  border-radius: 18px;
+  background: var(--primary-light);
+  border: 1px solid rgba(22, 138, 75, 0.18);
+}
+
+.result-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.result-header > span {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--primary);
+  font-size: 25px;
+}
+
+.result-label {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.result-header h3 {
+  margin-top: 3px;
+}
+
+.bus-time-box,
+.countdown-box {
+  margin-top: 15px;
+  padding: 16px;
+  border-radius: 15px;
+  background: white;
+  text-align: center;
+}
+
+.bus-time-box p,
+.countdown-box p {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.bus-time-box h2 {
+  margin-top: 6px;
+  font-size: 27px;
+  color: var(--primary-dark);
+}
+
+.timer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  margin-top: 8px;
+  font-size: clamp(28px, 8vw, 40px);
+  font-weight: bold;
+  color: var(--primary-dark);
+}
+
+.timer span {
+  min-width: 58px;
+  padding: 7px 5px;
+  border-radius: 12px;
+  background: #f4faf6;
+}
+
+.timer b {
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+
+/* ===================================
+   7. BUS VISUAL
+=================================== */
+
+.bus-visual {
+  margin-top: 24px;
+  padding: 22px 15px;
+  overflow: hidden;
+  border-radius: 18px;
+  text-align: center;
+  background: linear-gradient(135deg, #eef8f1, #ffffff);
+  border: 1px solid var(--border);
+}
+
+.bus-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: white;
+  font-size: 12px;
+  box-shadow: 0 5px 15px rgba(20, 50, 35, 0.06);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary);
+  animation: pulse 1.8s infinite;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.4;
+    transform: scale(1.6);
+  }
+}
+
+.bus-emoji {
+  margin: 15px 0 8px;
+  font-size: 82px;
+  animation: busFloat 2.5s ease-in-out infinite;
+}
+
+@keyframes busFloat {
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.bus-visual p {
+  color: var(--muted);
+}
+
+
+/* ===================================
+   8. INFO SECTIONS
+=================================== */
+
+.info-section {
+  margin-top: 24px;
+  padding: 20px;
+  border-radius: 18px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: 0 5px 20px rgba(20, 50, 35, 0.04);
+}
+
+.info-section h2 {
+  margin-bottom: 15px;
+  font-size: 21px;
+}
+
+.info-section > p {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+details {
+  padding: 14px 0;
+  border-top: 1px solid var(--border);
+}
+
+details:first-of-type {
+  border-top: 0;
+}
+
+summary {
+  cursor: pointer;
+  font-weight: bold;
+  line-height: 1.5;
+}
+
+details p {
+  padding-top: 10px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 14px;
+  border-radius: 14px;
+  background: #f8faf9;
+}
+
+.setting-item button {
+  border: 0;
+  padding: 9px 12px;
+  border-radius: 10px;
+  background: var(--primary-light);
+  color: var(--primary-dark);
+}
+
+
+/* ===================================
+   9. FOOTER & ANIMATED ROAD
+=================================== */
+
+.footer {
+  margin-top: 20px;
+  overflow: hidden;
+  background: #17231d;
+  color: white;
+}
+
+.road {
+  position: relative;
+  height: 95px;
+  overflow: hidden;
+  background: #303a34;
+  border-top: 5px solid #59635d;
+  border-bottom: 5px solid #59635d;
+}
+
+.road-lines {
+  position: absolute;
+  top: 47px;
+  left: -100%;
+  width: 300%;
+  height: 4px;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0 25px,
+    white 25px 55px
+  );
+  animation: roadMove 1.4s linear infinite;
+}
+
+@keyframes roadMove {
+  to {
+    transform: translateX(-100px);
+  }
+}
+
+.moving-bus {
+  position: absolute;
+  z-index: 2;
+  font-size: 35px;
+  animation: moveBus 8s linear infinite;
+}
+
+.bus-one {
+  top: 8px;
+  left: -80px;
+}
+
+.bus-two {
+  bottom: 7px;
+  left: -200px;
+  animation-delay: -3s;
+}
+
+.bus-three {
+  top: 30px;
+  left: -300px;
+  animation-delay: -6s;
+}
+
+@keyframes moveBus {
+  from {
+    transform: translateX(-80px);
+  }
+
+  to {
+    transform: translateX(120vw);
+  }
+}
+
+.footer-content {
+  padding: 28px 18px 34px;
+  text-align: center;
+}
+
+.footer-content h3 {
+  font-size: 20px;
+}
+
+.footer-content p {
+  margin: 8px 0 14px;
+  color: #c6d1ca;
+  font-size: 14px;
+}
+/* ===================================
+   11. DARK MODE
+=================================== */
+
+body.dark-mode {
+  --bg: #111714;
+  --card: #19221d;
+  --text: #eef6f0;
+  --muted: #aab8af;
+  --border: #2d3b33;
+  --primary-light: #203d2d;
+
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+}
+
+body.dark-mode .header {
+  background: rgba(25, 34, 29, 0.95);
+}
+
+body.dark-mode .side-menu {
+  background: var(--card);
+}
+
+body.dark-mode .menu-links a,
+body.dark-mode .setting-item {
+  background: #202b25;
+  color: var(--text);
+}
+
+body.dark-mode .search-input-box,
+body.dark-mode .form-group select {
+  background: #202b25;
+  color: var(--text);
+}
+
+body.dark-mode .bus-time-box,
+body.dark-mode .countdown-box {
+  background: #202b25;
+}
+
+body.dark-mode .bus-visual {
+  background: linear-gradient(135deg, #17251d, #19221d);
+}
+
+body.dark-mode .bus-status {
+  background: #202b25;
+}
+
+body.dark-mode .timer span {
+  background: #17251d;
+}
+
+/* ===================================
+   QUICK SEARCH BUTTON
+=================================== */
+
+.quick-search-btn {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: 12px;
+  background: var(--primary);
+  color: white;
+  font-size: 17px;
+  cursor: pointer;
+}
+
+.quick-search-btn:active {
+  transform: scale(0.95);
+/* ===================================
+   12. SEARCH HISTORY
+=================================== */
+
+.history-section {
+  margin-top: 24px;
+  padding: 20px;
+  border-radius: 20px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: 0 5px 20px rgba(20, 50, 35, 0.05);
+}
+
+.history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 16px;
+}
+
+.section-label {
+  margin-bottom: 4px;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: var(--primary);
+}
+
+.history-header h2 {
+  font-size: 21px;
+}
+
+.clear-history-btn {
+  border: 0;
+  padding: 9px 13px;
+  border-radius: 10px;
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.history-list {
+  display: grid;
+  gap: 10px;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 14px;
+  background: #f8faf9;
+  border: 1px solid var(--border);
+  cursor: pointer;
+}
+
+.history-item:active {
+  transform: scale(0.98);
+}
+
+.history-route {
+  display: block;
+  font-weight: bold;
+  color: var(--text);
+}
+
+.history-day {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.history-time {
+  flex-shrink: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.empty-history {
+  padding: 20px 10px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+
+/* Dark Mode */
+
+body.dark-mode .history-item {
+  background: #202b25;
+}
+  /* ===================================
+   13. LIVE ROUTE SUGGESTIONS
+=================================== */
+
+.quick-search-wrapper {
+  position: relative;
+  z-index: 20;
+}
+
+.suggestions {
+  display: none;
+  position: absolute;
+  top: calc(100% - 10px);
+  left: 0;
+  right: 0;
+  padding: 8px;
+  border-radius: 0 0 16px 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.suggestions.show {
+  display: block;
+}
+
+.suggestion-item {
+  width: 100%;
+  padding: 13px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.suggestion-item:active {
+  background: var(--primary-light);
+  transform: scale(0.99);
+}
+
+.suggestion-icon {
+  font-size: 20px;
+}
+
+.suggestion-route {
+  font-weight: bold;
+}
+
+.suggestion-empty {
+  padding: 14px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+body.dark-mode .suggestions {
+  background: var(--card);
+}
+
+  /* ===================================
+   HEADER MOBILE ALIGNMENT FIX
+=================================== */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* Logo + title area */
+.brand,
+.logo-area,
+.header-brand {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 0;
+  flex: 1;
+}
+
+/* Shift logo slightly to the left */
+.logo,
+.brand-logo,
+.header-logo {
+  margin-left: -6px;
+  flex-shrink: 0;
+}
+
+/* Make Bangladesh Air Force text smaller */
+.brand-text,
+.logo-text,
+.header-title {
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Keep menu button on the right */
+#menuBtn {
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+  /* ===================================
+   HEADER EXACT FIX
+=================================== */
+
+.header-content {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 5px;
+}
+
+/* Logo + text পুরো group */
+.brand {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  flex: 1;
+  margin-left: -12px;
+}
+
+/* বিমান icon/logo */
+.logo-placeholder {
+  flex-shrink: 0;
+  margin-right: 7px;
+}
+
+/* Text যেন জায়গা অনুযায়ী ছোট হতে পারে */
+.brand-text {
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* বাংলাদেশ বিমান বাহিনী */
+.brand-text h1 {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* নিচের ইংরেজি text */
+.brand-text p {
+  margin: 2px 0 0;
+  font-size: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* তিন লাইনের menu button */
+#menuBtn {
+  flex-shrink: 0;
+  margin-left: 4px;
+}
+  /* ===================================
+   SIMPLE HEADER UPDATE
+=================================== */
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.logo-placeholder {
+  flex-shrink: 0;
+}
+
+.brand-text {
+  min-width: 0;
+}
+
+.brand-text h1 {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.menu-btn,
+#menuBtn {
+  flex-shrink: 0;
+}
+  /* ===================================
+   USER FEEDBACK
+=================================== */
+
+.feedback-section {
+  margin-top: 24px;
+  padding: 20px;
+  border-radius: 20px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: 0 5px 20px rgba(20, 50, 35, 0.05);
+}
+
+.feedback-header {
+  margin-bottom: 10px;
+}
+
+.feedback-header h2 {
+  margin: 0;
+  font-size: 21px;
+}
+
+.feedback-description {
+  margin: 0 0 20px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.feedback-form {
+  display: grid;
+  gap: 16px;
+}
+
+.feedback-form .form-group {
+  display: grid;
+  gap: 7px;
+}
+
+.feedback-form label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.feedback-form label span {
+  font-size: 12px;
+  font-weight: normal;
+  color: var(--muted);
+}
+
+.feedback-form input,
+.feedback-form textarea {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--input-bg);
+  color: var(--text);
+  font: inherit;
+  outline: none;
+}
+
+.feedback-form textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.feedback-form input:focus,
+.feedback-form textarea:focus {
+  border-color: var(--primary);
+}
+
+.feedback-submit-btn {
+  width: 100%;
+  border: 0;
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--primary);
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.feedback-submit-btn:active {
+  transform: scale(0.98);
+}
+
+.feedback-status {
+  margin: 0;
+  min-height: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--muted);
+}
