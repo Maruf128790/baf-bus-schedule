@@ -532,6 +532,43 @@ function showAllBusTimes(buses) {
     }).join("");
 
 }
+  // ===================================
+// SHOW ALL BUS TIMES
+// ===================================
+
+function showAllBusTimes(buses) {
+
+  const allBusTimes =
+    document.getElementById("allBusTimes");
+
+  if (!allBusTimes) return;
+
+  if (!buses || buses.length === 0) {
+
+    allBusTimes.innerHTML =
+      "<p>কোনো Bus Schedule পাওয়া যায়নি।</p>";
+
+    return;
+  }
+
+
+  allBusTimes.innerHTML = buses.map((bus, index) => {
+
+    const note = bus.note
+      ? `<small>${bus.note}</small>`
+      : "";
+
+    return `
+      <div class="bus-time-item">
+        <span>🚌 Bus ${index + 1}</span>
+        <strong>${formatTime(bus.time)}</strong>
+        ${note}
+      </div>
+    `;
+
+  }).join("");
+
+}
 
   // ===================================
   // MAIN BUS SEARCH
