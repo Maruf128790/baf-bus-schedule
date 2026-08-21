@@ -1,5 +1,5 @@
 // ===================================
-// BUS SCHEDULE DATABASE
+// BUS SCHEDULE DATA
 // ===================================
 
 const schedules = [
@@ -134,7 +134,7 @@ const schedules = [
 
 
   // ===================================
-  // HQ - WORKING DAY
+  // AIR HQ - WORKING DAY
   // ===================================
 
   // HQ → AKR
@@ -171,7 +171,7 @@ const schedules = [
 
 
   // ===================================
-  // HQ - HOLIDAY
+  // AIR HQ - HOLIDAY
   // ===================================
 
   // HQ → AKR
@@ -232,32 +232,56 @@ function getNextBus(buses) {
     return null;
   }
 
+
   const now = new Date();
 
+
+  // একই সময়ের একাধিক বাসও এখানে আলাদা থাকবে
   const busList = buses.map((bus, index) => {
 
-    const parts = bus.time.split(":");
-    const hour = Number(parts[0]);
-    const minute = Number(parts[1]);
+    const [hour, minute] =
+      bus.time.split(":").map(Number);
 
-    const date = new Date();
 
-    date.setHours(hour, minute, 0, 0);
+    const busDate = new Date();
+
+    busDate.setHours(
+      hour,
+      minute,
+      0,
+      0
+    );
+
 
     return {
       ...bus,
-      index: index,
-      date: date
+      index,
+      date: busDate
     };
 
   });
 
 
-  // একই সময়ের একাধিক বাস রাখা হবে
-  busList.sort((a, b) => a.date - b.date);
+  // সময় অনুযায়ী সাজানো হবে
+  // একই সময় হলে original order বজায় থাকবে
+  busList.sort((a, b) => {
+
+    const timeDifference =
+      a.date - b.date;
+
+    if (timeDifference !== 0) {
+      return timeDifference;
+    }
+
+    return a.index - b.index;
+
+  });
 
 
-  // আজকের পরবর্তী বাস
+  // ===================================
+  // FIND TODAY'S NEXT BUS
+  // ===================================
+
   const nextBus = busList.find((bus) => {
 
     return bus.date >= now;
@@ -275,16 +299,24 @@ function getNextBus(buses) {
   }
 
 
-  // আজ আর বাস না থাকলে আগামীকালের প্রথম বাস
+  // ===================================
+  // NO BUS LEFT TODAY
+  // RETURN TOMORROW'S FIRST BUS
+  // ===================================
+
   const firstBus = busList[0];
 
-  const tomorrow = new Date(firstBus.date);
+  const tomorrowDate =
+    new Date(firstBus.date);
 
-  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrowDate.setDate(
+    tomorrowDate.getDate() + 1
+  );
+
 
   return {
     ...firstBus,
-    date: tomorrow,
+    date: tomorrowDate,
     isTomorrow: true
   };
 
