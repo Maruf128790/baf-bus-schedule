@@ -1,11 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="bn">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Bus Schedule Finder</title>
+  <title>Bus Schedule Information System</title>
 
   <!-- Main CSS -->
   <link rel="stylesheet" href="css/style.css">
@@ -20,18 +19,21 @@
 
     <div class="header-content">
 
-      <!-- Placeholder Logo -->
       <div class="brand">
         <div class="logo-placeholder">✈</div>
 
         <div class="brand-text">
-          
           <h1>Bus Schedule Information System</h1>
         </div>
       </div>
 
       <!-- Hamburger Menu -->
-      <button class="menu-btn" id="menuBtn" aria-label="Menu">
+      <button
+        class="menu-btn"
+        id="menuBtn"
+        aria-label="Menu"
+        type="button"
+      >
         <span></span>
         <span></span>
         <span></span>
@@ -50,11 +52,18 @@
   <aside class="side-menu" id="sideMenu">
 
     <div class="menu-header">
+
       <h2>Menu</h2>
 
-      <button class="close-menu" id="closeMenu">
+      <button
+        class="close-menu"
+        id="closeMenu"
+        type="button"
+        aria-label="Close Menu"
+      >
         ×
       </button>
+
     </div>
 
     <nav class="menu-links">
@@ -77,7 +86,10 @@
   ========================== -->
   <main class="main-content">
 
-    <!-- Hero Section -->
+
+    <!-- =========================
+         HERO SECTION
+    ========================== -->
     <section class="hero">
 
       <p class="welcome-text">Welcome to</p>
@@ -96,230 +108,386 @@
     ========================== -->
     <section class="search-card">
 
-      <!-- Search Bar -->
-         <div class="quick-search-wrapper">
 
-  <div class="search-input-box">
+      <!-- =========================
+           QUICK SEARCH
+      ========================== -->
+      <div class="quick-search-wrapper">
 
-    <span class="search-icon">⌕</span>
+        <div class="search-input-box">
 
-    <input
-      type="text"
-      id="quickSearch"
-      placeholder="যেমন: HQ to BSR"
-      autocomplete="off"
-    >
+          <span class="search-icon">⌕</span>
 
-    <button
-      type="button"
-      class="quick-search-btn"
-      id="quickSearchBtn"
-      aria-label="Quick Search"
-    >
-      🔍
-    </button>
+          <input
+            type="text"
+            id="quickSearch"
+            placeholder="যেমন: HQ to BSR"
+            autocomplete="off"
+          >
 
-  </div>
+          <button
+            type="button"
+            class="quick-search-btn"
+            id="quickSearchBtn"
+            aria-label="Quick Search"
+          >
+            🔍
+          </button>
 
-
-  <!-- Live Suggestions -->
-  <div
-    class="suggestions"
-    id="suggestions"
-  ></div>
-
-</div>
+        </div>
 
 
+        <!-- Live Suggestions -->
+        <div
+          class="suggestions"
+          id="suggestions"
+        ></div>
 
-      
-          <!-- Route Selection -->
+      </div>
+
+
+      <!-- =========================
+           FROM SELECTION
+      ========================== -->
       <div class="form-group">
 
         <label for="fromSelect">From</label>
 
         <select id="fromSelect">
-          <option value="" selected disabled>Select From</option>
+
+          <option value="">Select From</option>
+
           <option value="HQ">HQ</option>
           <option value="BSR">BSR</option>
           <option value="AKR">AKR</option>
+          <option value="RECORD">Record</option>
           <option value="74">74</option>
           <option value="216">216</option>
+
         </select>
 
       </div>
 
 
+      <!-- =========================
+           TO SELECTION
+      ========================== -->
       <div class="form-group">
 
         <label for="toSelect">To</label>
 
         <select id="toSelect">
-          <option value="" selected disabled>Select To</option>
+
+          <option value="">Select To</option>
+
           <option value="HQ">HQ</option>
           <option value="BSR">BSR</option>
           <option value="AKR">AKR</option>
+          <option value="RECORD">Record</option>
           <option value="74">74</option>
           <option value="216">216</option>
+
         </select>
 
       </div>
 
 
+      <!-- =========================
+           DAY SELECTION
+      ========================== -->
       <div class="form-group">
 
         <label for="daySelect">Day</label>
 
         <select id="daySelect">
-          <option value="" selected disabled>Select Day</option>
-          <option value="working">Working Day</option>
-          <option value="holiday">Holiday</option>
+
+          <option value="" selected disabled>
+            Select Day
+          </option>
+
+          <option value="working">
+            Working Day
+          </option>
+
+          <option value="holiday">
+            Holiday
+          </option>
+
         </select>
 
       </div>
 
 
-      <!-- Search Button -->
-      <button class="search-btn" id="searchBtn">
+      <!-- =========================
+           SEARCH BUTTON
+      ========================== -->
+      <button
+        class="search-btn"
+        id="searchBtn"
+        type="button"
+      >
         <span>🚌</span>
         Search Bus
       </button>
 
 
-      <!-- Error Message -->
-      <p class="message" id="message"></p>
+      <!-- =========================
+           MESSAGE / ERROR
+      ========================== -->
+      <p
+        class="message"
+        id="message"
+      ></p>
 
 
       <!-- =========================
            RESULT AREA
       ========================== -->
-      <section class="result-card" id="resultCard">
+      <section
+        class="result-card"
+        id="resultCard"
+        style="display: none;"
+      >
 
+
+        <!-- RESULT HEADER -->
         <div class="result-header">
-          <span>🚌</span>
+
+          <p class="result-label">
+            SEARCH RESULT
+          </p>
+
+          <h2 id="routeResult">
+            From → To
+          </h2>
+
+          <span
+            id="dayResult"
+            class="day-badge"
+          >
+            Working Day
+          </span>
+
+        </div>
+
+
+        <!-- =========================
+             NEXT AVAILABLE BUS
+        ========================== -->
+        <div class="next-bus-section">
+
+          <div class="section-title">
+            🚌 Next Available Bus
+          </div>
+
+
+          <div
+            id="departureTime"
+            class="next-bus-time"
+          >
+            --:--
+          </div>
+
+
+          <!-- COUNTDOWN -->
+          <div class="countdown-box">
+
+            <span class="countdown-label">
+              ⏳ বাস ছাড়তে বাকি
+            </span>
+
+            <div
+              class="timer"
+              id="countdown"
+            >
+              <span>00</span>
+              <b>:</b>
+              <span>00</span>
+              <b>:</b>
+              <span>00</span>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- =========================
+             ALL BUS SCHEDULE
+        ========================== -->
+        <div class="all-schedule-section">
+
+          <h3>
+            🚌 All Bus Schedule
+          </h3>
+
+          <div
+            id="allBusTimes"
+            class="all-bus-times"
+          >
+            <!--
+              JavaScript will automatically show
+              all buses here.
+
+              Same time = multiple buses
+              will also be shown separately.
+            -->
+          </div>
+
+        </div>
+
+
+      </section>
+
+
+      <!-- =========================
+           RECENT SEARCHES
+      ========================== -->
+      <section
+        class="history-section"
+        id="historySection"
+      >
+
+        <div class="history-header">
 
           <div>
-            <p class="result-label">Next Available Bus</p>
-            <h3 id="routeResult">HQ → BSR</h3>
+
+            <p class="section-label">
+              RECENT ACTIVITY
+            </p>
+
+            <h2>
+              🕘 Recent Searches
+            </h2>
+
           </div>
+
+
+          <button
+            type="button"
+            id="clearHistoryBtn"
+            class="clear-history-btn"
+          >
+            Clear
+          </button>
+
         </div>
 
 
-        <div class="bus-time-box">
-          <p>Next Departure</p>
-          <h2 id="departureTime">--:--</h2>
-        </div>
-
-
-        <!-- Countdown -->
-        <div class="countdown-box">
-
-          <p>Bus leaves in</p>
-
-          <div class="timer" id="countdown">
-            <span>00</span>
-            <b>:</b>
-            <span>00</span>
-            <b>:</b>
-            <span>00</span>
-
-            <div class="all-schedule-section">
-  <h3>🚌 All Bus Schedule</h3>
-
-  <div id="allBusTimes" class="all-bus-times">
-    <!-- Bus times will appear here -->
-  </div>
-</div>
-          </div>
-
+        <div
+          id="historyList"
+          class="history-list"
+        >
+          <!-- History will appear here -->
         </div>
 
       </section>
-<!-- ===================================
-     RECENT SEARCHES
-=================================== -->
-
-<section class="history-section" id="historySection">
-
-  <div class="history-header">
-
-    <div>
-      <p class="section-label">RECENT ACTIVITY</p>
-      <h2>🕘 Recent Searches</h2>
-    </div>
-
-    <button
-      type="button"
-      id="clearHistoryBtn"
-      class="clear-history-btn"
-    >
-      Clear
-    </button>
-
-  </div>
 
 
-  <div
-    id="historyList"
-    class="history-list"
-  >
-    <!-- History will appear here -->
-  </div>
-
-</section>
-
-      <!-- Bus Visual -->
+      <!-- =========================
+           BUS VISUAL
+      ========================== -->
       <div class="bus-visual">
 
         <div class="bus-status">
+
           <span class="status-dot"></span>
+
           Ready to Search
+
         </div>
 
-        <div class="bus-emoji">🚌</div>
 
-        <p>Find your next journey</p>
+        <div class="bus-emoji">
+          🚌
+        </div>
+
+
+        <p>
+          Find your next journey
+        </p>
 
       </div>
 
+
     </section>
 
 
-
-    
     <!-- =========================
          FAQ
     ========================== -->
-    <section class="info-section" id="faq">
+    <section
+      class="info-section"
+      id="faq"
+    >
 
-      <h2>Frequently Asked Questions</h2>
+      <h2>
+        Frequently Asked Questions
+      </h2>
+
 
       <details>
-        <summary>কিভাবে বাসের সময়সূচি খুঁজব?</summary>
+
+        <summary>
+          কিভাবে বাসের সময়সূচি খুঁজব?
+        </summary>
+
         <p>
           From, To এবং Day নির্বাচন করে Search Bus বাটনে চাপুন।
         </p>
+
       </details>
 
+
       <details>
-        <summary>Working Day কী?</summary>
+
+        <summary>
+          একই সময়ে একাধিক বাস থাকলে কী হবে?
+        </summary>
+
+        <p>
+          একই সময়ে একাধিক বাস থাকলে প্রতিটি বাস All Bus Schedule
+          অংশে আলাদাভাবে দেখানো হবে।
+        </p>
+
+      </details>
+
+
+      <details>
+
+        <summary>
+          Working Day কী?
+        </summary>
+
         <p>
           সাধারণ কর্মদিবসের জন্য নির্ধারিত বাসের সময়সূচি।
         </p>
+
       </details>
 
+
       <details>
-        <summary>Holiday schedule কিভাবে দেখব?</summary>
+
+        <summary>
+          Holiday schedule কিভাবে দেখব?
+        </summary>
+
         <p>
           Day থেকে Holiday নির্বাচন করে বাস খুঁজুন।
         </p>
+
       </details>
 
     </section>
 
 
-    <!-- Account -->
-    <section class="info-section" id="account">
+    <!-- =========================
+         ACCOUNT
+    ========================== -->
+    <section
+      class="info-section"
+      id="account"
+    >
 
       <h2>Account</h2>
 
@@ -330,26 +498,41 @@
     </section>
 
 
-    <!-- Settings -->
-    <section class="info-section" id="settings">
+    <!-- =========================
+         SETTINGS
+    ========================== -->
+    <section
+      class="info-section"
+      id="settings"
+    >
 
       <h2>Settings</h2>
 
       <div class="setting-item">
-        <span>🌙 Dark Mode</span>
-        
-        
-        
-        <button id="themeToggle">
-  🌙 Dark Mode
-</button>
+
+        <span>
+          🌙 Dark Mode
+        </span>
+
+        <button
+          id="themeToggle"
+          type="button"
+        >
+          🌙 Dark Mode
+        </button>
+
       </div>
 
     </section>
 
 
-    <!-- About -->
-    <section class="info-section" id="about">
+    <!-- =========================
+         ABOUT
+    ========================== -->
+    <section
+      class="info-section"
+      id="about"
+    >
 
       <h2>About</h2>
 
@@ -358,89 +541,110 @@
       </p>
 
     </section>
-<!-- ===================================
-     USER FEEDBACK
-=================================== -->
-
-<section class="feedback-section" id="feedbackSection">
-
-  <div class="feedback-header">
-
-    <div>
-      <p class="section-label">YOUR VOICE MATTERS</p>
-      <h2>💬 মতামত ও পরামর্শ</h2>
-    </div>
-
-  </div>
 
 
-  <p class="feedback-description">
-    আমাদের Bus Schedule Information System আরও ভালো করতে আপনার মতামত ও পরামর্শ জানান।
-  </p>
+    <!-- =========================
+         USER FEEDBACK
+    ========================== -->
+    <section
+      class="feedback-section"
+      id="feedbackSection"
+    >
+
+      <div class="feedback-header">
+
+        <div>
+
+          <p class="section-label">
+            YOUR VOICE MATTERS
+          </p>
+
+          <h2>
+            💬 মতামত ও পরামর্শ
+          </h2>
+
+        </div>
+
+      </div>
 
 
-  <form id="feedbackForm" class="feedback-form">
+      <p class="feedback-description">
+        আমাদের Bus Schedule Information System আরও ভালো করতে
+        আপনার মতামত ও পরামর্শ জানান।
+      </p>
 
-    <!-- Optional Name -->
 
-    <div class="form-group">
-
-      <label for="feedbackName">
-        আপনার নাম <span>(ঐচ্ছিক)</span>
-      </label>
-
-      <input
-        type="text"
-        id="feedbackName"
-        placeholder="আপনার নাম লিখুন"
-        maxlength="50"
+      <form
+        id="feedbackForm"
+        class="feedback-form"
       >
 
-    </div>
+
+        <!-- NAME -->
+        <div class="form-group">
+
+          <label for="feedbackName">
+
+            আপনার নাম
+
+            <span>
+              (ঐচ্ছিক)
+            </span>
+
+          </label>
 
 
-    <!-- Feedback Message -->
+          <input
+            type="text"
+            id="feedbackName"
+            placeholder="আপনার নাম লিখুন"
+            maxlength="50"
+          >
 
-    <div class="form-group">
-
-      <label for="feedbackMessage">
-        আপনার মতামত / পরামর্শ
-      </label>
-
-      <textarea
-        id="feedbackMessage"
-        placeholder="এখানে আপনার মতামত লিখুন..."
-        rows="5"
-        maxlength="500"
-        required
-      ></textarea>
-
-    </div>
+        </div>
 
 
-    <!-- Submit -->
+        <!-- FEEDBACK MESSAGE -->
+        <div class="form-group">
 
-    <button
-      type="submit"
-      id="feedbackSubmitBtn"
-      class="feedback-submit-btn"
-    >
-      📩 মতামত পাঠান
-    </button>
+          <label for="feedbackMessage">
+            আপনার মতামত / পরামর্শ
+          </label>
 
 
-    <!-- Status -->
+          <textarea
+            id="feedbackMessage"
+            placeholder="এখানে আপনার মতামত লিখুন..."
+            rows="5"
+            maxlength="500"
+            required
+          ></textarea>
 
-    <p
-      id="feedbackStatus"
-      class="feedback-status"
-    ></p>
+        </div>
 
-  </form>
 
-</section>
+        <!-- SUBMIT -->
+        <button
+          type="submit"
+          id="feedbackSubmitBtn"
+          class="feedback-submit-btn"
+        >
+          📩 মতামত পাঠান
+        </button>
 
-    
+
+        <!-- STATUS -->
+        <p
+          id="feedbackStatus"
+          class="feedback-status"
+        ></p>
+
+
+      </form>
+
+    </section>
+
+
   </main>
 
 
@@ -449,40 +653,74 @@
   ========================== -->
   <footer class="footer">
 
-    <!-- Road -->
+
+    <!-- ROAD -->
     <div class="road">
 
       <div class="road-lines"></div>
 
-      <div class="moving-bus bus-one">🚌</div>
-      <div class="moving-bus bus-two">🚌</div>
-      <div class="moving-bus bus-three">🚌</div>
+      <div class="moving-bus bus-one">
+        🚌
+      </div>
+
+      <div class="moving-bus bus-two">
+        🚌
+      </div>
+
+      <div class="moving-bus bus-three">
+        🚌
+      </div>
 
     </div>
 
 
+    <!-- FOOTER CONTENT -->
     <div class="footer-content">
 
-      <h3>Bus Schedule Finder</h3>
+      <h3>
+        Bus Schedule Finder
+      </h3>
+
 
       <p>
         সহজে খুঁজুন • সময়মতো যাত্রা করুন
       </p>
 
+
       <small>
-        © <span id="year"></span> Bus Schedule Finder
+        © <span id="year"></span>
+        Bus Schedule Information System
       </small>
 
+
+      <!-- DEVELOPER NAME -->
+      <p class="developer-name">
+        Developed by: <strong> MD Maruf Hosen</strong>
+      </p>
+
     </div>
+
 
   </footer>
 
 
-  <!-- JavaScript Files -->
+  <!-- =========================
+       JAVASCRIPT FILES
+       Order is important
+  ========================== -->
+
+  <!-- Schedule Database -->
   <script src="js/schedule.js"></script>
+
+  <!-- Countdown Timer -->
   <script src="js/timer.js"></script>
+
+  <!-- Main Application -->
   <script src="js/app.js"></script>
-<script src="js/admin.js"></script>
-  
+
+  <!-- Admin System -->
+  <script src="js/admin.js"></script>
+
+
 </body>
 </html>
