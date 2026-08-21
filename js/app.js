@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const message = document.getElementById("message");
   const routeResult = document.getElementById("routeResult");
   const departureTime = document.getElementById("departureTime");
-
+const allBusTimes = document.getElementById("allBusTimes");
   const quickSearch = document.getElementById("quickSearch");
   const quickSearchBtn = document.getElementById("quickSearchBtn");
 
@@ -492,6 +492,46 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
   }
+  // ===================================
+// SHOW ALL BUS TIMES
+// ===================================
+
+function showAllBusTimes(buses) {
+
+  if (!allBusTimes) return;
+
+  if (!buses || buses.length === 0) {
+
+    allBusTimes.innerHTML =
+      "<p>কোনো Bus Schedule পাওয়া যায়নি।</p>";
+
+    return;
+  }
+
+  allBusTimes.innerHTML =
+    buses.map((bus, index) => {
+
+      const note = bus.note
+        ? ` <small>(${bus.note})</small>`
+        : "";
+
+      return `
+        <div class="bus-time-item">
+          <span class="bus-number">
+            🚌 Bus ${index + 1}
+          </span>
+
+          <strong>
+            ${formatTime(bus.time)}
+          </strong>
+
+          ${note}
+        </div>
+      `;
+
+    }).join("");
+
+}
 
   // ===================================
   // MAIN BUS SEARCH
@@ -617,9 +657,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
       const nextBus =
-        getNextBus(schedule.times);
+        getNextBus(schedule.buses);
+      
 
-
+showAllBusTimes(schedule.buses);
       // কোনো সময় না থাকলে
 
       if (!nextBus) {
