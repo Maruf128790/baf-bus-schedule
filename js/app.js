@@ -24,13 +24,23 @@ document.addEventListener("DOMContentLoaded", () => {
   const resultCard = document.getElementById("resultCard");
   const message = document.getElementById("message");
   const routeResult = document.getElementById("routeResult");
+  const dayResult = document.getElementById("dayResult");
   const departureTime = document.getElementById("departureTime");
-const allBusTimes = document.getElementById("allBusTimes");
+  const allBusTimes = document.getElementById("allBusTimes");
+
   const quickSearch = document.getElementById("quickSearch");
   const quickSearchBtn = document.getElementById("quickSearchBtn");
+  const suggestions = document.getElementById("suggestions");
 
   const historyList = document.getElementById("historyList");
   const clearHistoryBtn = document.getElementById("clearHistoryBtn");
+
+  const feedbackForm = document.getElementById("feedbackForm");
+  const feedbackName = document.getElementById("feedbackName");
+  const feedbackMessage = document.getElementById("feedbackMessage");
+  const feedbackStatus = document.getElementById("feedbackStatus");
+  const feedbackSubmitBtn =
+    document.getElementById("feedbackSubmitBtn");
 
 
   // ===================================
@@ -47,16 +57,28 @@ const allBusTimes = document.getElementById("allBusTimes");
   // ===================================
 
   function openMenu() {
-    if (sideMenu) sideMenu.classList.add("open");
-    if (menuOverlay) menuOverlay.classList.add("show");
+
+    if (sideMenu) {
+      sideMenu.classList.add("open");
+    }
+
+    if (menuOverlay) {
+      menuOverlay.classList.add("show");
+    }
 
     document.body.style.overflow = "hidden";
   }
 
 
   function closeSideMenu() {
-    if (sideMenu) sideMenu.classList.remove("open");
-    if (menuOverlay) menuOverlay.classList.remove("show");
+
+    if (sideMenu) {
+      sideMenu.classList.remove("open");
+    }
+
+    if (menuOverlay) {
+      menuOverlay.classList.remove("show");
+    }
 
     document.body.style.overflow = "";
   }
@@ -66,16 +88,21 @@ const allBusTimes = document.getElementById("allBusTimes");
     menuBtn.addEventListener("click", openMenu);
   }
 
+
   if (closeMenu) {
     closeMenu.addEventListener("click", closeSideMenu);
   }
+
 
   if (menuOverlay) {
     menuOverlay.addEventListener("click", closeSideMenu);
   }
 
+
   document.querySelectorAll(".menu-links a").forEach((link) => {
+
     link.addEventListener("click", closeSideMenu);
+
   });
 
 
@@ -86,6 +113,7 @@ const allBusTimes = document.getElementById("allBusTimes");
   function setTheme(theme) {
 
     if (theme === "dark") {
+
       document.body.classList.add("dark-mode");
 
       if (themeToggle) {
@@ -93,12 +121,15 @@ const allBusTimes = document.getElementById("allBusTimes");
       }
 
     } else {
+
       document.body.classList.remove("dark-mode");
 
       if (themeToggle) {
         themeToggle.textContent = "🌙 Dark Mode";
       }
+
     }
+
   }
 
 
@@ -122,6 +153,7 @@ const allBusTimes = document.getElementById("allBusTimes");
       setTheme(newTheme);
 
       localStorage.setItem("theme", newTheme);
+
     });
 
   }
@@ -132,16 +164,20 @@ const allBusTimes = document.getElementById("allBusTimes");
   // ===================================
 
   function showMessage(text) {
+
     if (message) {
       message.textContent = text;
     }
+
   }
 
 
   function clearMessage() {
+
     if (message) {
       message.textContent = "";
     }
+
   }
 
 
@@ -150,6 +186,10 @@ const allBusTimes = document.getElementById("allBusTimes");
   // ===================================
 
   function formatTime(time) {
+
+    if (!time) {
+      return "--:--";
+    }
 
     const [hour, minute] =
       time.split(":").map(Number);
@@ -163,6 +203,57 @@ const allBusTimes = document.getElementById("allBusTimes");
       minute: "2-digit",
       hour12: true
     });
+
+  }
+
+
+  // ===================================
+  // CHECK SPECIAL BUS DAY
+  // ===================================
+
+  function isBusAvailableToday(bus) {
+
+    if (!bus.note) {
+      return true;
+    }
+
+    const note =
+      bus.note.toLowerCase();
+
+    const today =
+      new Date().getDay();
+
+    // Friday = 5
+    if (note.includes("friday")) {
+      return today === 5;
+    }
+
+    // Saturday = 6
+    if (note.includes("saturday")) {
+      return today === 6;
+    }
+
+    return true;
+
+  }
+
+
+  // ===================================
+  // FILTER AVAILABLE BUSES
+  // ===================================
+
+  function getAvailableBuses(buses) {
+
+    if (!Array.isArray(buses)) {
+      return [];
+    }
+
+    return buses.filter((bus) => {
+
+      return isBusAvailableToday(bus);
+
+    });
+
   }
 
 
@@ -173,21 +264,26 @@ const allBusTimes = document.getElementById("allBusTimes");
   function getSearchHistory() {
 
     try {
+
       return JSON.parse(
         localStorage.getItem("busSearchHistory")
       ) || [];
 
     } catch (error) {
+
       return [];
+
     }
+
   }
 
 
   function saveSearchHistory(from, to, day) {
 
-    let history = getSearchHistory();
+    let history =
+      getSearchHistory();
 
-    // একই search থাকলে পুরোনোটা remove
+
     history = history.filter((item) => {
 
       return !(
@@ -195,20 +291,24 @@ const allBusTimes = document.getElementById("allBusTimes");
         item.to === to &&
         item.day === day
       );
+
     });
 
 
-    // নতুন search শুরুতে যোগ
     history.unshift({
-      from: from,
-      to: to,
-      day: day,
-      savedAt: Date.now()
+
+      from,
+      to,
+      day,
+
+      savedAt:
+        Date.now()
+
     });
 
 
-    // সর্বোচ্চ 5টি
-    history = history.slice(0, 5);
+    history =
+      history.slice(0, 5);
 
 
     localStorage.setItem(
@@ -218,14 +318,19 @@ const allBusTimes = document.getElementById("allBusTimes");
 
 
     renderSearchHistory();
+
   }
 
 
   function renderSearchHistory() {
 
-    if (!historyList) return;
+    if (!historyList) {
+      return;
+    }
 
-    const history = getSearchHistory();
+
+    const history =
+      getSearchHistory();
 
 
     if (history.length === 0) {
@@ -237,53 +342,62 @@ const allBusTimes = document.getElementById("allBusTimes");
       `;
 
       return;
+
     }
 
 
-    historyList.innerHTML = history.map((item) => {
+    historyList.innerHTML =
+      history.map((item) => {
 
-      const dayText =
-        item.day === "working"
-          ? "Working Day"
-          : "Holiday";
-
-
-      const savedDate =
-        new Date(item.savedAt);
+        const dayText =
+          item.day === "working"
+            ? "Working Day"
+            : "Holiday";
 
 
-      const timeText =
-        savedDate.toLocaleTimeString("en-US", {
-          hour: "numeric",
-          minute: "2-digit",
-          hour12: true
-        });
+        const savedDate =
+          new Date(item.savedAt);
 
 
-      return `
-        <div
-          class="history-item"
-          data-from="${item.from}"
-          data-to="${item.to}"
-          data-day="${item.day}"
-        >
-          <div>
-            <span class="history-route">
-              ${item.from} → ${item.to}
+        const timeText =
+          savedDate.toLocaleTimeString(
+            "en-US",
+            {
+              hour: "numeric",
+              minute: "2-digit",
+              hour12: true
+            }
+          );
+
+
+        return `
+          <div
+            class="history-item"
+            data-from="${item.from}"
+            data-to="${item.to}"
+            data-day="${item.day}"
+          >
+
+            <div>
+
+              <span class="history-route">
+                ${item.from} → ${item.to}
+              </span>
+
+              <span class="history-day">
+                ${dayText}
+              </span>
+
+            </div>
+
+            <span class="history-time">
+              ${timeText}
             </span>
 
-            <span class="history-day">
-              ${dayText}
-            </span>
           </div>
+        `;
 
-          <span class="history-time">
-            ${timeText}
-          </span>
-        </div>
-      `;
-
-    }).join("");
+      }).join("");
 
 
     document
@@ -293,16 +407,20 @@ const allBusTimes = document.getElementById("allBusTimes");
         item.addEventListener("click", () => {
 
           if (fromSelect) {
-            fromSelect.value = item.dataset.from;
+            fromSelect.value =
+              item.dataset.from;
           }
 
           if (toSelect) {
-            toSelect.value = item.dataset.to;
+            toSelect.value =
+              item.dataset.to;
           }
 
           if (daySelect) {
-            daySelect.value = item.dataset.day;
+            daySelect.value =
+              item.dataset.day;
           }
+
 
           showMessage(
             "আগের Search নির্বাচন করা হয়েছে। এখন Search Bus চাপুন।"
@@ -319,34 +437,25 @@ const allBusTimes = document.getElementById("allBusTimes");
 
     clearHistoryBtn.addEventListener("click", () => {
 
-      localStorage.removeItem("busSearchHistory");
+      localStorage.removeItem(
+        "busSearchHistory"
+      );
 
       renderSearchHistory();
 
-      showMessage("Search History মুছে ফেলা হয়েছে।");
+      showMessage(
+        "Search History মুছে ফেলা হয়েছে।"
+      );
 
     });
 
   }
+
+
   // ===================================
-  // FEEDBACK SYSTEM - LOCAL TEST
+  // FEEDBACK SYSTEM
+  // LOCAL STORAGE VERSION
   // ===================================
-
-  const feedbackForm =
-    document.getElementById("feedbackForm");
-
-  const feedbackName =
-    document.getElementById("feedbackName");
-
-  const feedbackMessage =
-    document.getElementById("feedbackMessage");
-
-  const feedbackStatus =
-    document.getElementById("feedbackStatus");
-
-  const feedbackSubmitBtn =
-    document.getElementById("feedbackSubmitBtn");
-
 
   function getFeedbacks() {
 
@@ -416,8 +525,6 @@ const allBusTimes = document.getElementById("allBusTimes");
             : "";
 
 
-        // Validation
-
         if (!text.trim()) {
 
           if (feedbackStatus) {
@@ -432,8 +539,6 @@ const allBusTimes = document.getElementById("allBusTimes");
         }
 
 
-        // Button loading
-
         if (feedbackSubmitBtn) {
 
           feedbackSubmitBtn.disabled =
@@ -445,23 +550,18 @@ const allBusTimes = document.getElementById("allBusTimes");
         }
 
 
-        // Save feedback
-
         saveFeedback(name, text);
 
-
-        // Clear form
 
         if (feedbackName) {
           feedbackName.value = "";
         }
 
+
         if (feedbackMessage) {
           feedbackMessage.value = "";
         }
 
-
-        // Success message
 
         if (feedbackStatus) {
 
@@ -470,8 +570,6 @@ const allBusTimes = document.getElementById("allBusTimes");
 
         }
 
-
-        // Reset button
 
         if (feedbackSubmitBtn) {
 
@@ -488,124 +586,138 @@ const allBusTimes = document.getElementById("allBusTimes");
         }
 
       }
-
     );
 
   }
+
+
   // ===================================
-// SHOW ALL BUS TIMES
-// ===================================
+  // SHOW ALL BUS TIMES
+  // SAME TIME = SEPARATE BUSES
+  // ===================================
 
-function showAllBusTimes(buses) {
+  function showAllBusTimes(buses) {
 
-  if (!allBusTimes) return;
+    if (!allBusTimes) {
+      return;
+    }
 
-  if (!buses || buses.length === 0) {
 
-    allBusTimes.innerHTML =
-      "<p>কোনো Bus Schedule পাওয়া যায়নি।</p>";
+    if (!Array.isArray(buses) ||
+        buses.length === 0) {
 
-    return;
-  }
-
-  allBusTimes.innerHTML =
-    buses.map((bus, index) => {
-
-      const note = bus.note
-        ? ` <small>(${bus.note})</small>`
-        : "";
-
-      return `
-        <div class="bus-time-item">
-          <span class="bus-number">
-            🚌 Bus ${index + 1}
-          </span>
-
-          <strong>
-            ${formatTime(bus.time)}
-          </strong>
-
-          ${note}
-        </div>
+      allBusTimes.innerHTML = `
+        <p>
+          কোনো Bus Schedule পাওয়া যায়নি।
+        </p>
       `;
 
-    }).join("");
+      return;
 
-}
-  // ===================================
-// SHOW ALL BUS TIMES
-// ===================================
+    }
 
-function showAllBusTimes(buses) {
-
-  const allBusTimes =
-    document.getElementById("allBusTimes");
-
-  if (!allBusTimes) return;
-
-  if (!buses || buses.length === 0) {
 
     allBusTimes.innerHTML =
-      "<p>কোনো Bus Schedule পাওয়া যায়নি।</p>";
+      buses.map((bus, index) => {
 
-    return;
+        const specialNote =
+          bus.note
+            ? `<small>${bus.note}</small>`
+            : "";
+
+
+        const availableToday =
+          isBusAvailableToday(bus);
+
+
+        const unavailableText =
+          availableToday
+            ? ""
+            : `<small class="special-day-note">
+                 আজ চলবে না
+               </small>`;
+
+
+        return `
+          <div class="bus-time-item">
+
+            <span class="bus-number">
+              🚌 Bus ${index + 1}
+            </span>
+
+            <strong>
+              ${formatTime(bus.time)}
+            </strong>
+
+            ${specialNote}
+
+            ${unavailableText}
+
+          </div>
+        `;
+
+      }).join("");
+
   }
 
 
-  allBusTimes.innerHTML = buses.map((bus, index) => {
+  // ===================================
+  // RESET SEARCH BUTTON
+  // ===================================
 
-    const note = bus.note
-      ? `<small>${bus.note}</small>`
-      : "";
+  function resetSearchButton() {
 
-    return `
-      <div class="bus-time-item">
-        <span>🚌 Bus ${index + 1}</span>
-        <strong>${formatTime(bus.time)}</strong>
-        ${note}
-      </div>
-    `;
+    if (!searchBtn) {
+      return;
+    }
 
-  }).join("");
+    searchBtn.disabled = false;
 
-}
+    searchBtn.innerHTML =
+      "<span>🚌</span> Search Bus";
+
+  }
+
 
   // ===================================
   // MAIN BUS SEARCH
   // ===================================
 
-  function resetSearchButton() {
-
-    if (!searchBtn) return;
-
-    searchBtn.disabled = false;
-
-    searchBtn.innerHTML = "🚌 Search Bus";
-  }
-
-
   function searchBus() {
 
-    if (!fromSelect || !toSelect || !daySelect) {
-      showMessage("Search form পাওয়া যায়নি।");
+    if (!fromSelect ||
+        !toSelect ||
+        !daySelect) {
+
+      showMessage(
+        "Search form পাওয়া যায়নি।"
+      );
+
       return;
+
     }
 
 
-    const from = fromSelect.value;
-    const to = toSelect.value;
-    const day = daySelect.value;
+    const from =
+      fromSelect.value;
+
+    const to =
+      toSelect.value;
+
+    const day =
+      daySelect.value;
 
 
     clearMessage();
 
 
-    // Validation
+    // VALIDATION
 
     if (!from || !to || !day) {
 
       if (resultCard) {
-        resultCard.style.display = "none";
+        resultCard.style.display =
+          "none";
       }
 
       showMessage(
@@ -613,13 +725,15 @@ function showAllBusTimes(buses) {
       );
 
       return;
+
     }
 
 
     if (from === to) {
 
       if (resultCard) {
-        resultCard.style.display = "none";
+        resultCard.style.display =
+          "none";
       }
 
       showMessage(
@@ -627,10 +741,11 @@ function showAllBusTimes(buses) {
       );
 
       return;
+
     }
 
 
-    // Schedule system ready কিনা
+    // CHECK SCHEDULE SYSTEM
 
     if (typeof findSchedule !== "function") {
 
@@ -639,30 +754,35 @@ function showAllBusTimes(buses) {
       );
 
       return;
+
     }
 
 
-    // Loading button
+    // LOADING BUTTON
 
     if (searchBtn) {
+
       searchBtn.disabled = true;
-      searchBtn.textContent = "⏳ Searching...";
+
+      searchBtn.textContent =
+        "⏳ Searching...";
+
     }
 
 
     setTimeout(() => {
 
-      // আগে schedule খুঁজবে
       const schedule =
         findSchedule(from, to, day);
 
 
-      // Schedule না পেলে
+      // NO SCHEDULE
 
       if (!schedule) {
 
         if (resultCard) {
-          resultCard.style.display = "none";
+          resultCard.style.display =
+            "none";
         }
 
         showMessage(
@@ -672,14 +792,48 @@ function showAllBusTimes(buses) {
         resetSearchButton();
 
         return;
+
       }
 
 
-      // Schedule পাওয়া গেলে History save করবে
-      saveSearchHistory(from, to, day);
+      // SAVE HISTORY
+
+      saveSearchHistory(
+        from,
+        to,
+        day
+      );
 
 
-      // Next bus function check
+      // SHOW ALL BUSES
+      // Duplicate times remain visible
+
+      showAllBusTimes(
+        schedule.buses
+      );
+
+
+      // UPDATE RESULT HEADER
+
+      if (routeResult) {
+
+        routeResult.textContent =
+          `${from} → ${to}`;
+
+      }
+
+
+      if (dayResult) {
+
+        dayResult.textContent =
+          day === "working"
+            ? "Working Day"
+            : "Holiday";
+
+      }
+
+
+      // GET NEXT BUS FUNCTION CHECK
 
       if (typeof getNextBus !== "function") {
 
@@ -690,67 +844,78 @@ function showAllBusTimes(buses) {
         resetSearchButton();
 
         return;
+
       }
 
 
-      const nextBus =
-        getNextBus(schedule.buses);
-      
+      // FILTER SPECIAL DAY BUSES
 
-showAllBusTimes(schedule.buses);
-      // কোনো সময় না থাকলে
+      const availableBuses =
+        getAvailableBuses(
+          schedule.buses
+        );
+
+
+      // GET NEXT BUS
+
+      const nextBus =
+        getNextBus(
+          availableBuses
+        );
+
 
       if (!nextBus) {
 
         if (resultCard) {
-          resultCard.style.display = "none";
+          resultCard.style.display =
+            "none";
         }
 
         showMessage(
-          "এই রুটের জন্য কোনো Bus Time পাওয়া যায়নি।"
+          "আজকের জন্য কোনো Bus Time পাওয়া যায়নি।"
         );
 
         resetSearchButton();
 
         return;
+
       }
 
 
-      // ===================================
       // SHOW RESULT
-      // ===================================
 
       if (resultCard) {
-        resultCard.style.display = "block";
-      }
 
+        resultCard.style.display =
+          "block";
 
-      if (routeResult) {
-        routeResult.textContent =
-          `${from} → ${to}`;
       }
 
 
       if (departureTime) {
 
         if (nextBus.isTomorrow) {
+
           departureTime.textContent =
             `আগামীকাল ${formatTime(nextBus.time)}`;
 
         } else {
+
           departureTime.textContent =
             `আজ ${formatTime(nextBus.time)}`;
+
         }
+
       }
 
 
-      // ===================================
       // START COUNTDOWN
-      // ===================================
 
       if (typeof startCountdown === "function") {
 
-        startCountdown(nextBus.date);
+        startCountdown(
+          nextBus.date
+        );
 
       } else {
 
@@ -761,7 +926,7 @@ showAllBusTimes(schedule.buses);
       }
 
 
-      // Result-এ scroll
+      // SCROLL TO RESULT
 
       if (resultCard) {
 
@@ -780,13 +945,17 @@ showAllBusTimes(schedule.buses);
   }
 
 
-  // Search Button Event
+  // ===================================
+  // SEARCH BUTTON EVENT
+  // ===================================
 
   if (searchBtn) {
+
     searchBtn.addEventListener(
       "click",
       searchBus
     );
+
   }
 
 
@@ -798,19 +967,33 @@ showAllBusTimes(schedule.buses);
     "HQ",
     "BSR",
     "AKR",
+    "RECORD",
     "74",
     "216"
   ];
 
 
+  function normalizeQuickSearch(text) {
+
+    return text
+      .toUpperCase()
+      .replace(/RECORD OFFICE/g, "RECORD")
+      .replace(/REC/g, "RECORD");
+
+  }
+
+
   function processQuickSearch() {
 
-    if (!quickSearch) return;
+    if (!quickSearch) {
+      return;
+    }
+
 
     const query =
-      quickSearch.value
-        .trim()
-        .toUpperCase();
+      normalizeQuickSearch(
+        quickSearch.value.trim()
+      );
 
 
     clearMessage();
@@ -819,10 +1002,11 @@ showAllBusTimes(schedule.buses);
     if (!query) {
 
       showMessage(
-        "একটি রুট লিখুন। যেমন: HQ to BSR"
+        "একটি রুট লিখুন। যেমন: AKR to BSR"
       );
 
       return;
+
     }
 
 
@@ -835,13 +1019,18 @@ showAllBusTimes(schedule.buses);
     if (foundLocations.length >= 2) {
 
       if (fromSelect) {
+
         fromSelect.value =
           foundLocations[0];
+
       }
 
+
       if (toSelect) {
+
         toSelect.value =
           foundLocations[1];
+
       }
 
 
@@ -849,15 +1038,20 @@ showAllBusTimes(schedule.buses);
         `রুট নির্বাচন করা হয়েছে: ${foundLocations[0]} → ${foundLocations[1]}। এখন Day নির্বাচন করুন।`
       );
 
+      hideSuggestions();
+
       return;
+
     }
 
 
     if (foundLocations.length === 1) {
 
       if (fromSelect) {
+
         fromSelect.value =
           foundLocations[0];
+
       }
 
 
@@ -866,11 +1060,12 @@ showAllBusTimes(schedule.buses);
       );
 
       return;
+
     }
 
 
     showMessage(
-      "কোনো পরিচিত Location পাওয়া যায়নি। যেমন: HQ to BSR"
+      "কোনো পরিচিত Location পাওয়া যায়নি। যেমন: AKR to BSR"
     );
 
   }
@@ -905,32 +1100,71 @@ showAllBusTimes(schedule.buses);
 
   }
 
+
   // ===================================
   // LIVE ROUTE SUGGESTIONS
+  // GENERATED FROM REAL SCHEDULE DATA
   // ===================================
 
-  const suggestions =
-    document.getElementById("suggestions");
+  function getRouteSuggestions() {
+
+    if (typeof schedules === "undefined" ||
+        !Array.isArray(schedules)) {
+
+      return [];
+
+    }
 
 
-  const routeSuggestions = [
-    { from: "HQ",  to: "BSR" },
-    { from: "HQ",  to: "AKR" },
-    { from: "HQ",  to: "74" },
-    { from: "HQ",  to: "216" },
+    const uniqueRoutes = [];
 
-    { from: "BSR", to: "HQ" },
-    { from: "AKR", to: "HQ" },
-    { from: "74",  to: "HQ" },
-    { from: "216", to: "HQ" }
-  ];
+
+    schedules.forEach((schedule) => {
+
+      const alreadyExists =
+        uniqueRoutes.some((route) => {
+
+          return (
+            route.from === schedule.from &&
+            route.to === schedule.to
+          );
+
+        });
+
+
+      if (!alreadyExists) {
+
+        uniqueRoutes.push({
+
+          from: schedule.from,
+          to: schedule.to
+
+        });
+
+      }
+
+    });
+
+
+    return uniqueRoutes;
+
+  }
+
+
+  const routeSuggestions =
+    getRouteSuggestions();
 
 
   function hideSuggestions() {
 
-    if (!suggestions) return;
+    if (!suggestions) {
+      return;
+    }
 
-    suggestions.classList.remove("show");
+    suggestions.classList.remove(
+      "show"
+    );
+
     suggestions.innerHTML = "";
 
   }
@@ -938,35 +1172,51 @@ showAllBusTimes(schedule.buses);
 
   function showSuggestions() {
 
-    if (!quickSearch || !suggestions) return;
+    if (!quickSearch ||
+        !suggestions) {
 
-
-    const query =
-      quickSearch.value
-        .trim()
-        .toUpperCase();
-
-
-    if (!query) {
-
-      hideSuggestions();
       return;
 
     }
 
 
-    // Route text match
+    const query =
+      normalizeQuickSearch(
+        quickSearch.value.trim()
+      );
+
+
+    if (!query) {
+
+      hideSuggestions();
+
+      return;
+
+    }
+
 
     const matchedRoutes =
       routeSuggestions.filter((route) => {
 
         const routeText =
-          `${route.from} ${route.to}`;
+          `${route.from} TO ${route.to}`;
+
+        const compactRoute =
+          `${route.from}${route.to}`;
+
 
         return (
+
           routeText.includes(query) ||
+
+          compactRoute.includes(
+            query.replace(/\s/g, "")
+          ) ||
+
           route.from.includes(query) ||
+
           route.to.includes(query)
+
         );
 
       });
@@ -980,7 +1230,9 @@ showAllBusTimes(schedule.buses);
         </div>
       `;
 
-      suggestions.classList.add("show");
+      suggestions.classList.add(
+        "show"
+      );
 
       return;
 
@@ -997,6 +1249,7 @@ showAllBusTimes(schedule.buses);
             data-from="${route.from}"
             data-to="${route.to}"
           >
+
             <span class="suggestion-icon">
               🚌
             </span>
@@ -1004,58 +1257,77 @@ showAllBusTimes(schedule.buses);
             <span class="suggestion-route">
               ${route.from} → ${route.to}
             </span>
+
           </button>
         `;
 
       }).join("");
 
 
-    suggestions.classList.add("show");
+    suggestions.classList.add(
+      "show"
+    );
 
-
-    // Click a suggestion
 
     suggestions
-      .querySelectorAll(".suggestion-item")
+      .querySelectorAll(
+        ".suggestion-item"
+      )
       .forEach((item) => {
 
-        item.addEventListener("click", () => {
+        item.addEventListener(
+          "click",
+          () => {
 
-          const from =
-            item.dataset.from;
+            const from =
+              item.dataset.from;
 
-          const to =
-            item.dataset.to;
+            const to =
+              item.dataset.to;
 
 
-          if (fromSelect) {
-            fromSelect.value = from;
+            if (fromSelect) {
+
+              fromSelect.value =
+                from;
+
+            }
+
+
+            if (toSelect) {
+
+              toSelect.value =
+                to;
+
+            }
+
+
+            if (quickSearch) {
+
+              quickSearch.value =
+                `${from} to ${to}`;
+
+            }
+
+
+            hideSuggestions();
+
+
+            showMessage(
+              `রুট নির্বাচন করা হয়েছে: ${from} → ${to}। এখন Day নির্বাচন করুন।`
+            );
+
           }
-
-          if (toSelect) {
-            toSelect.value = to;
-          }
-
-
-          quickSearch.value =
-            `${from} to ${to}`;
-
-
-          hideSuggestions();
-
-
-          showMessage(
-            `রুট নির্বাচন করা হয়েছে: ${from} → ${to}। এখন Day নির্বাচন করুন।`
-          );
-
-        });
+        );
 
       });
 
   }
 
 
-  // Show suggestions while typing
+  // ===================================
+  // SUGGESTIONS EVENTS
+  // ===================================
 
   if (quickSearch) {
 
@@ -1073,7 +1345,9 @@ showAllBusTimes(schedule.buses);
   }
 
 
-  // Hide when clicking outside
+  // ===================================
+  // HIDE SUGGESTIONS OUTSIDE
+  // ===================================
 
   document.addEventListener(
     "click",
@@ -1089,6 +1363,8 @@ showAllBusTimes(schedule.buses);
 
     }
   );
+
+
   // ===================================
   // INITIAL LOAD
   // ===================================
