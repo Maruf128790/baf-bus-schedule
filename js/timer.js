@@ -24,6 +24,7 @@ function startCountdown(targetDate) {
     document.getElementById("countdownLabel");
 
 
+  // Countdown elements না থাকলে stop
   if (
     !hoursElement ||
     !minutesElement ||
@@ -33,12 +34,12 @@ function startCountdown(targetDate) {
   }
 
 
-  // পুরোনো timer বন্ধ
+  // আগের timer বন্ধ
   if (countdownInterval) {
 
-    clearInterval(
-      countdownInterval
-    );
+    clearInterval(countdownInterval);
+
+    countdownInterval = null;
 
   }
 
@@ -52,6 +53,7 @@ function startCountdown(targetDate) {
       now.getTime();
 
 
+    // Bus time চলে এলে
     if (difference <= 0) {
 
       hoursElement.textContent = "00";
@@ -60,44 +62,53 @@ function startCountdown(targetDate) {
 
 
       if (labelElement) {
+
         labelElement.textContent =
           "Bus time reached";
+
       }
 
 
-      clearInterval(
-        countdownInterval
-      );
+      clearInterval(countdownInterval);
+
+      countdownInterval = null;
 
       return;
     }
 
 
+    // মোট seconds
     const totalSeconds =
       Math.floor(difference / 1000);
 
 
+    // Hours
     const hours =
       Math.floor(
         totalSeconds / 3600
       );
 
 
+    // Minutes
     const minutes =
       Math.floor(
         (totalSeconds % 3600) / 60
       );
 
 
+    // Seconds
     const seconds =
       totalSeconds % 60;
 
 
+    // Display
     hoursElement.textContent =
       String(hours).padStart(2, "0");
 
+
     minutesElement.textContent =
       String(minutes).padStart(2, "0");
+
 
     secondsElement.textContent =
       String(seconds).padStart(2, "0");
@@ -113,12 +124,15 @@ function startCountdown(targetDate) {
   }
 
 
+  // সঙ্গে সঙ্গে একবার চালাবে
   updateCountdown();
 
 
+  // প্রতি 1 second পরপর update
   countdownInterval =
     setInterval(
       updateCountdown,
-      search-icon
+      1000
+    );
 
 }
