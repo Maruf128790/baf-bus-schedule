@@ -8,7 +8,6 @@ const schedules = [
   // WORKING DAY
   // ===================================
 
-  // BSR → AKR
   {
     from: "BSR",
     to: "AKR",
@@ -24,7 +23,6 @@ const schedules = [
     ]
   },
 
-  // BSR → 74
   {
     from: "BSR",
     to: "74",
@@ -34,17 +32,6 @@ const schedules = [
     ]
   },
 
-  // 216 → AKR
-  {
-    from: "216",
-    to: "AKR",
-    day: "working",
-    buses: [
-      { time: "14:40" }
-    ]
-  },
-
-  // 74 → AKR
   {
     from: "74",
     to: "AKR",
@@ -54,7 +41,15 @@ const schedules = [
     ]
   },
 
-  // RECORD → AKR
+  {
+    from: "216",
+    to: "AKR",
+    day: "working",
+    buses: [
+      { time: "14:40" }
+    ]
+  },
+
   {
     from: "RECORD",
     to: "AKR",
@@ -66,7 +61,6 @@ const schedules = [
     ]
   },
 
-  // AKR → BSR
   {
     from: "AKR",
     to: "BSR",
@@ -83,7 +77,6 @@ const schedules = [
     ]
   },
 
-  // AKR → 216
   {
     from: "AKR",
     to: "216",
@@ -100,7 +93,6 @@ const schedules = [
   // HOLIDAY
   // ===================================
 
-  // BSR → AKR
   {
     from: "BSR",
     to: "AKR",
@@ -116,7 +108,6 @@ const schedules = [
     ]
   },
 
-  // AKR → BSR
   {
     from: "AKR",
     to: "BSR",
@@ -137,7 +128,6 @@ const schedules = [
   // AIR HQ - WORKING DAY
   // ===================================
 
-  // HQ → AKR
   {
     from: "HQ",
     to: "AKR",
@@ -151,7 +141,6 @@ const schedules = [
     ]
   },
 
-  // AKR → HQ
   {
     from: "AKR",
     to: "HQ",
@@ -174,7 +163,6 @@ const schedules = [
   // AIR HQ - HOLIDAY
   // ===================================
 
-  // HQ → AKR
   {
     from: "HQ",
     to: "AKR",
@@ -187,7 +175,6 @@ const schedules = [
     ]
   },
 
-  // AKR → HQ
   {
     from: "AKR",
     to: "HQ",
@@ -223,6 +210,31 @@ function findSchedule(from, to, day) {
 
 
 // ===================================
+// CHECK SPECIAL DAY
+// ===================================
+
+function isBusAvailableToday(bus, date) {
+
+  if (!bus.note) {
+    return true;
+  }
+
+  const note = bus.note.toLowerCase();
+
+  if (note === "only friday") {
+    return date.getDay() === 5;
+  }
+
+  if (note === "only saturday") {
+    return date.getDay() === 6;
+  }
+
+  return true;
+
+}
+
+
+// ===================================
 // GET NEXT BUS
 // ===================================
 
@@ -232,61 +244,36 @@ function getNextBus(buses) {
     return null;
   }
 
-
   const now = new Date();
 
+  const availableBuses = buses
+    .map((bus, index) => {
 
-  // একই সময়ের একাধিক বাসও এখানে আলাদা থাকবে
-  const busList = buses.map((bus, index) => {
+      if (!isBusAvailableToday(bus, now)) {
+        return null;
+      }
 
-    const [hour, minute] =
-      bus.time.split(":").map(Number);
+      const [hour, minute] =
+        bus.time.split(":").map(Number);
 
+      const date = new Date(now);
 
-    const busDate = new Date();
+      date.setHours(hour, minute, 0, 0);
 
-    busDate.setHours(
-      hour,
-      minute,
-      0,
-      0
-    );
+      return {
+        ...bus,
+        index,
+        date
+      };
 
-
-    return {
-      ...bus,
-      index,
-      date: busDate
-    };
-
-  });
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.date - b.date);
 
 
-  // সময় অনুযায়ী সাজানো হবে
-  // একই সময় হলে original order বজায় থাকবে
-  busList.sort((a, b) => {
-
-    const timeDifference =
-      a.date - b.date;
-
-    if (timeDifference !== 0) {
-      return timeDifference;
-    }
-
-    return a.index - b.index;
-
-  });
-
-
-  // ===================================
-  // FIND TODAY'S NEXT BUS
-  // ===================================
-
-  const nextBus = busList.find((bus) => {
-
-    return bus.date >= now;
-
-  });
+  const nextBus = availableBuses.find(
+    (bus) => bus.date >= now
+  );
 
 
   if (nextBus) {
@@ -299,25 +286,6 @@ function getNextBus(buses) {
   }
 
 
-  // ===================================
-  // NO BUS LEFT TODAY
-  // RETURN TOMORROW'S FIRST BUS
-  // ===================================
-
-  const firstBus = busList[0];
-
-  const tomorrowDate =
-    new Date(firstBus.date);
-
-  tomorrowDate.setDate(
-    tomorrowDate.getDate() + 1
-  );
-
-
-  return {
-    ...firstBus,
-    date: tomorrowDate,
-    isTomorrow: true
-  };
+  return null;
 
 }
